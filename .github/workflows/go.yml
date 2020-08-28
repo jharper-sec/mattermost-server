@@ -32,6 +32,7 @@ jobs:
     - name: Get Contrast Go Agent
       run: |
         curl https://contrast-golang-agent.s3.us-east-2.amazonaws.com/0_2_1/contrast-go --output ./contrast-go
+        chmod u+x ./contrast-go
 
     - name: Build
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/
