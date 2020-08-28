@@ -31,12 +31,12 @@ jobs:
         fi
     - name: Get Contrast Go Agent
       run: |
-        curl https://contrast-golang-agent.s3.us-east-2.amazonaws.com/0_2_1/contrast-go --output $GOPATH/bin/contrast-go
+        curl https://contrast-golang-agent.s3.us-east-2.amazonaws.com/0_2_1/contrast-go --output ./contrast-go
 
     - name: Build
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/
     - name: Build with Contrast
-      run: contrast-go -dataflow -v -save build -o ./bin/mattermost-instrumented ./cmd/mattermost/
+      run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-instrumented ./cmd/mattermost/
     
     - name: Archive go binaries
       uses: actions/upload-artifact@v2
