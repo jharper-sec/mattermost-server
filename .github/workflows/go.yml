@@ -77,8 +77,7 @@ jobs:
       run: |
         aws s3 cp s3://contrast-golang-agent/0.2.1/windows/amd64/contrast-go .\contrast-go
         echo $Env:Username
-        Get-Location
-        icacls (Get-Location)\contrast-go /grant "$Env:Username:RX"
+        icacls D:\a\mattermost-server\mattermost-server\contrast-go /grant runneradmin:rx
        
     - name: Get dependencies
       run: |
