@@ -86,10 +86,10 @@ jobs:
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/
       
     - name: Build with Contrast - No Dataflow
-      run: contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/
+      run: Start-Process -FilePath "./contrast-go" -ArgumentList "-v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/"
       
     - name: Build with Contrast - With Dataflow
-      run: contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/
+      run: Start-Process -FilePath "./contrast-go" -ArgumentList "-dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/"
     
     - name: Archive go binaries
       uses: actions/upload-artifact@v2
