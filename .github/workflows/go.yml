@@ -37,13 +37,13 @@ jobs:
         go get -v -t -d ./...
 
     - name: Build
-      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ 2>&1 >&3 | tee build-go-normal.log
+      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
       
     - name: Build with Contrast - No Dataflow
-      run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ 2>&1 >&3 | tee contrast-build-no-dataflow.log
+      run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1 
       
     - name: Build with Contrast - With Dataflow
-      run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ 2>&1 >&3 | tee contrast-build-dataflow.log
+      run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
     
     - name: Archive go binaries
       uses: actions/upload-artifact@v2
@@ -131,16 +131,16 @@ jobs:
         go get -v -t -d ./...
 
     - name: Build
-      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ 2>&1 >&3 | tee build-go-normal.log
+      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
 
     - name: Build with Contrast - No Dataflow
       run: |
-        ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ 2>&1 >&3 | tee contrast-build-no-dataflow.log
+        ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1 
         aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-no-dataflow.log
       
     - name: Build with Contrast - With Dataflow
       run: |
-        ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ 2>&1 >&3 | tee contrast-build-dataflow.log
+        ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
         aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-dataflow.log
     
     - name: Archive go binaries
