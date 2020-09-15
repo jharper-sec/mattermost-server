@@ -131,7 +131,9 @@ jobs:
         go get -v -t -d ./...
 
     - name: Build
-      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
+      run: |
+        go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
+        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/logs/applications/mattermost/build-go-normal.log
 
     - name: Build with Contrast - No Dataflow
       run: |
