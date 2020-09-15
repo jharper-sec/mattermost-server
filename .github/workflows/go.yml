@@ -75,9 +75,9 @@ jobs:
         
     - name: Copy files to the test website with the AWS CLI
       run: |
-        aws s3 cp s3://contrast-golang-agent/0.2.1/windows/amd64/contrast-go ./contrast-go
+        aws s3 cp s3://contrast-golang-agent/0.2.1/windows/amd64/contrast-go .\contrast-go
         echo $Env:Username
-        icacls ./contrast-go /grant $Env:Username:RX
+        icacls .\contrast-go /grant "$Env:Username:RX"
        
     - name: Get dependencies
       run: |
