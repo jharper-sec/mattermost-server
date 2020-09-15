@@ -1,0 +1,23 @@
+FROM golang:1.15.2-alpine3.12
+
+# AWS Credentials
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+# Install AWS CLI
+RUN apk add --no-cache python py-pip
+RUN pip install awscli
+RUN aws --version
+
+# Download agent and set execution permissions
+RUN aws s3 cp s3://contrast-golang-agent/0.2.1/linux/amd64/contrast-go ./contrast-go
+RUN chmod u+x ./contrast-go
+
+# Get dependencies
+RUN go get -v -t -d ./...
+
+# Build without Contrast
+RUN go build -v -o ./bin/mattermost ./cmd/mattermost/
+
+# Build with Contrast
+RUN ./contrast-go -v -save build -o ./bin/mattermost-instrumented ./cmd/mattermost/
