@@ -40,10 +40,12 @@ jobs:
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
       
     - name: Build with Contrast - No Dataflow
-      run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1 
+      run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1
+      continue-on-error: true
       
     - name: Build with Contrast - With Dataflow
       run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
+      continue-on-error: true
     
     - name: Archive go binaries
       uses: actions/upload-artifact@v2
@@ -53,52 +55,52 @@ jobs:
           bin/mattermost
           bin/mattermost-instrumented
 
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.15
-      id: go
+#   build-windows:
+#     name: Build Windows
+#     runs-on: windows-latest
+#     steps:
+#     - name: Set up Go 1.x
+#       uses: actions/setup-go@v2
+#       with:
+#         go-version: ^1.15
+#       id: go
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+#     - name: Check out code into the Go module directory
+#       uses: actions/checkout@v2
       
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+#     - name: Configure AWS Credentials
+#       uses: aws-actions/configure-aws-credentials@v1
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: us-east-2
         
-    - name: Copy files to the test website with the AWS CLI
-      run: |
-        aws s3 cp s3://contrast-golang-agent/0.2.1/windows/amd64/contrast-go .\contrast-go
-        echo $Env:Username
-        icacls D:\a\mattermost-server\mattermost-server\contrast-go /grant runneradmin:rx
+#     - name: Copy files to the test website with the AWS CLI
+#       run: |
+#         aws s3 cp s3://contrast-golang-agent/0.2.1/windows/amd64/contrast-go .\contrast-go
+#         echo $Env:Username
+#         icacls D:\a\mattermost-server\mattermost-server\contrast-go /grant runneradmin:rx
        
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
+#     - name: Get dependencies
+#       run: |
+#         go get -v -t -d ./...
 
-    - name: Build
-      run: go build -v -o ./bin/mattermost ./cmd/mattermost/
+#     - name: Build
+#       run: go build -v -o ./bin/mattermost ./cmd/mattermost/
       
-    - name: Build with Contrast - No Dataflow
-      run: Start-Process -FilePath "./contrast-go" -ArgumentList "-v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/"
+#     - name: Build with Contrast - No Dataflow
+#       run: Start-Process -FilePath "./contrast-go" -ArgumentList "-v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/"
       
-    - name: Build with Contrast - With Dataflow
-      run: Start-Process -FilePath "./contrast-go" -ArgumentList "-dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/"
+#     - name: Build with Contrast - With Dataflow
+#       run: Start-Process -FilePath "./contrast-go" -ArgumentList "-dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/"
     
-    - name: Archive go binaries
-      uses: actions/upload-artifact@v2
-      with:
-        name: binaries
-        path: |
-          bin/mattermost
-          bin/mattermost-instrumented
+#     - name: Archive go binaries
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: binaries
+#         path: |
+#           bin/mattermost
+#           bin/mattermost-instrumented
 
   build-ubuntu:
     name: Build Ubuntu
@@ -131,18 +133,20 @@ jobs:
         go get -v -t -d ./...
 
     - name: Build
-      run: |
-        go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
+      run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
         aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/logs/applications/mattermost/build-go-normal.log
 
     - name: Build with Contrast - No Dataflow
-      run: |
-        ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1 
-        aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-no-dataflow.log
-      
+      run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1
+      continue-on-error: true
+        
     - name: Build with Contrast - With Dataflow
+      run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
+      continue-on-error: true
+    
+    - name: Copy Log Files to S3
       run: |
-        ./contrast-go -dataflow -v -save build -o ./bin/mattermost-contrast-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
+        aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-no-dataflow.log
         aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-dataflow.log
     
     - name: Archive go binaries
