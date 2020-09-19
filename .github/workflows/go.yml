@@ -123,18 +123,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
         
-    - name: Copy files to the test website with the AWS CLI
+    - name: Download the Contrast Agent
       run: |
         aws s3 cp s3://contrast-golang-agent/0.2.1/linux/amd64/contrast-go ./contrast-go
         chmod u+x ./contrast-go
       
-    - name: Get dependencies
+    - name: Get Go dependencies
       run: |
         go get -v -t -d ./...
 
     - name: Build
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
-        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/logs/applications/mattermost/build-go-normal.log
 
     - name: Build with Contrast - No Dataflow
       run: ./contrast-go -v -save build -o ./bin/mattermost-contrast-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1
@@ -146,6 +145,7 @@ jobs:
     
     - name: Copy Log Files to S3
       run: |
+        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/logs/applications/mattermost/build-go-normal.log
         aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-no-dataflow.log
         aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/logs/applications/mattermost/contrast-build-dataflow.log
     
