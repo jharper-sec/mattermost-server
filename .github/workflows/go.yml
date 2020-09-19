@@ -162,7 +162,8 @@ jobs:
         
     - name: Copy Rewritten Source to S3
       run: |
-        aws s3 cp /tmp/contrast/go/ s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/tmp/contrast/go/ --recursive
+        tar -czvf ./contrast-go-save.tar.gz /tmp/contrast/go/
+        aws s3 cp ./contrast-go-save.tar.gz s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/save/contrast-go-save.tar.gz
     
     - name: Set Contrast Session Metadata
       run: |
