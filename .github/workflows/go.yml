@@ -149,20 +149,20 @@ jobs:
     
     - name: Copy Log Files to S3
       run: |
-        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/logs/build-go-normal.log
-        aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/logs/contrast-build-no-dataflow.log
-        aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/logs/contrast-build-dataflow.log
+        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/build-go-normal.log
+        aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/contrast-build-no-dataflow.log
+        aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/contrast-build-dataflow.log
     
     - name: Copy Binaries to S3
       run: |
-        aws s3 cp ./bin/mattermost s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost
-        aws s3 cp ./bin/mattermost-no-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost-no-dataflow
-        aws s3 cp ./bin/mattermost-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost-dataflow\
+        aws s3 cp ./bin/mattermost s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost
+        aws s3 cp ./bin/mattermost-no-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost-no-dataflow
+        aws s3 cp ./bin/mattermost-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost-dataflow\
       continue-on-error: true
         
     - name: Copy Rewritten Source to S3
       run: |
-        aws s3 cp /tmp/contrast/go/*/target/ s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/target/ --recursive
+        aws s3 cp /tmp/contrast/go/*/target/ s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/target/ --recursive
   
 #     - name: Archive go binaries
 #       uses: actions/upload-artifact@v2
