@@ -157,8 +157,13 @@ jobs:
       run: |
         aws s3 cp ./bin/mattermost s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost
         aws s3 cp ./bin/mattermost-no-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost-no-dataflow
-        aws s3 cp ./bin/mattermost-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost-dataflow
-    
+        aws s3 cp ./bin/mattermost-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/bin/mattermost-dataflow\
+      continue-on-error: true
+        
+    - name: Copy Rewritten Source to S3
+      run: |
+        aws s3 cp /tmp/contrast/go/*/target/ s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/target/ --recursive
+  
 #     - name: Archive go binaries
 #       uses: actions/upload-artifact@v2
 #       with:
