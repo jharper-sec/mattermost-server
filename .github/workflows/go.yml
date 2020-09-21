@@ -176,7 +176,8 @@ jobs:
     
     - name: Contrast Agent Docker Build
       run: |
-        echo -e 'FROM scratch\nCOPY ./bin/mattermost-no-dataflow ./mattermost-no-dataflow\nENTRYPOINT ["./mattermost-no-dataflow"]' | docker build -
+        echo -e 'FROM scratch\nCOPY ./bin/mattermost-no-dataflow ./mattermost-no-dataflow\nENTRYPOINT ["./mattermost-no-dataflow"]' > Dockerfile-tmp
+        docker build . -f Dockerfile-tmp -t mattermost-contrast:latest -t mattermost-contrast:$CONTRAST_AGENT_VERSION
         
 #     - name: Archive go binaries
 #       uses: actions/upload-artifact@v2
