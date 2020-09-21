@@ -126,9 +126,13 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
     
-    - name: Download the Contrast Agent
+    - name: Configure Environment
       run: |
         export CONTRAST_AGENT_VERSION=0.2.1
+        export S3_BASE_DIR=s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}
+    
+    - name: Download the Contrast Agent
+      run: |
         aws s3 cp s3://contrast-golang-agent/$CONTRAST_AGENT_VERSION/linux/amd64/contrast-go ./contrast-go
         chmod u+x ./contrast-go
       
@@ -149,21 +153,21 @@ jobs:
     
     - name: Copy Log Files to S3
       run: |
-        aws s3 cp ./build-go-normal.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/build-go-normal.log
-        aws s3 cp ./contrast-build-no-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/contrast-build-no-dataflow.log
-        aws s3 cp ./contrast-build-dataflow.log s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/logs/contrast-build-dataflow.log
+        aws s3 cp ./build-go-normal.log ${S3_BASE_DIR}/logs/build-go-normal.log
+        aws s3 cp ./contrast-build-no-dataflow.log ${S3_BASE_DIR}/logs/contrast-build-no-dataflow.log
+        aws s3 cp ./contrast-build-dataflow.log ${S3_BASE_DIR}/logs/contrast-build-dataflow.log
     
     - name: Copy Binaries to S3
       run: |
-        aws s3 cp ./bin/mattermost s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost
-        aws s3 cp ./bin/mattermost-no-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost-no-dataflow
-        aws s3 cp ./bin/mattermost-dataflow s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/bin/mattermost-dataflow\
+        aws s3 cp ./bin/mattermost ${S3_BASE_DIR}/bin/mattermost
+        aws s3 cp ./bin/mattermost-no-dataflow ${S3_BASE_DIR}/bin/mattermost-no-dataflow
+        aws s3 cp ./bin/mattermost-dataflow ${S3_BASE_DIR}/bin/mattermost-dataflow\
       continue-on-error: true
         
     - name: Copy Rewritten Source to S3
       run: |
         tar -czvf ./contrast-go-save.tar.gz /tmp/contrast/go/
-        aws s3 cp ./contrast-go-save.tar.gz s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}/save/contrast-go-save.tar.gz
+        aws s3 cp ./contrast-go-save.tar.gz ${S3_BASE_DIR}/save/contrast-go-save.tar.gz
     
     - name: Set Contrast Session Metadata
       run: |
