@@ -172,7 +172,7 @@ jobs:
     
     - name: Contrast Agent Docker Build
       run: |
-        echo -e 'FROM scratch\nCOPY ./bin/mattermost-no-dataflow ./mattermost-no-dataflow\nENTRYPOINT ["./mattermost-no-dataflow"]' | docker build --build-args CONTRAST__APPLICATION__SESSION_METADATA=$CONTRAST__APPLICATION__SESSION_METADATA -
+        echo -e 'FROM scratch\nCOPY ./bin/mattermost-no-dataflow ./mattermost-no-dataflow\nENTRYPOINT ["./mattermost-no-dataflow"]' | docker build -
         
 #     - name: Archive go binaries
 #       uses: actions/upload-artifact@v2
