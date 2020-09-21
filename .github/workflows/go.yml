@@ -118,7 +118,11 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-      
+    
+    - name: Test Docker Execution
+      run: |
+        echo -e 'FROM busybox\nRUN echo "hello world"' | docker build -
+    
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -169,6 +173,7 @@ jobs:
       run: |
         export CONTRAST__APPLICATION__SESSION_METADATA="commitHash=$GITHUB_SHA,committer=$GITHUB_ACTOR,branchName=$GITHUB_REF,repository=$GITHUB_REPOSITORY,buildNumber=$GITHUB_RUN_NUMBER"
         echo $CONTRAST__APPLICATION__SESSION_METADATA
+        
 #     - name: Archive go binaries
 #       uses: actions/upload-artifact@v2
 #       with:
