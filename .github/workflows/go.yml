@@ -128,8 +128,8 @@ jobs:
     
     - name: Configure Environment
       run: |
-        export CONTRAST_AGENT_VERSION=0.2.1
-        export S3_BASE_DIR=s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}
+        echo "::set-env name=CONTRAST_AGENT_VERSION::0.2.1"
+        echo "::set-env name=S3_BASE_DIR::s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}"
     
     - name: Download the Contrast Agent
       run: |
