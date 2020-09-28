@@ -128,13 +128,19 @@ jobs:
     
     - name: Configure Environment
       run: |
-        echo "::set-env name=CONTRAST_AGENT_VERSION::0.2.1"
+        echo "::set-env name=CONTRAST_AGENT_VERSION::0.2.2"
         echo "::set-env name=S3_BASE_DIR::s3://contrast-golang-agent/apps/${GITHUB_REPOSITORY}/run-${GITHUB_RUN_NUMBER}"
     
     - name: Download the Contrast Agent
       run: |
-        aws s3 cp s3://contrast-golang-agent/$CONTRAST_AGENT_VERSION/linux/amd64/contrast-go ./contrast-go
-        chmod u+x ./contrast-go
+        curl https://pkg.contrastsecurity.com/api/gpg/key/public | sudo apt-key add -
+        echo "deb https://pkg.contrastsecurity.com/debian-public/ all contrast" | sudo tee /etc/apt/sources.list.d/contrast-all.list
+        sudo apt-get update && sudo apt-get install contrast-go=$CONTRAST_AGENT_VERSION
+        
+#     - name: Download the Contrast Agent
+#       run: |
+#         aws s3 cp s3://contrast-golang-agent/$CONTRAST_AGENT_VERSION/linux/amd64/contrast-go ./contrast-go
+#         chmod u+x ./contrast-go
       
     - name: Get Go dependencies
       run: |
@@ -144,11 +150,11 @@ jobs:
       run: go build -v -o ./bin/mattermost ./cmd/mattermost/ > build-go-normal.log 2>&1
 
     - name: Build with Contrast - No Dataflow
-      run: ./contrast-go -v -save build -o ./bin/mattermost-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1
+      run: contrast-go -v -save build -race -o ./bin/mattermost-no-dataflow ./cmd/mattermost/ > contrast-build-no-dataflow.log 2>&1
       continue-on-error: true
         
     - name: Build with Contrast - With Dataflow
-      run: ./contrast-go -dataflow -v -save build -o ./bin/mattermost-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
+      run: contrast-go -dataflow -v -save build -race -o ./bin/mattermost-dataflow ./cmd/mattermost/ > contrast-build-dataflow.log 2>&1
       continue-on-error: true
     
     - name: Copy Log Files to S3
