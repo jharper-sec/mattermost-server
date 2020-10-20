@@ -134,8 +134,10 @@ jobs:
 
     - name: Download the Contrast Agent
       run: |
-        curl -L https://pkg.contrastsecurity.com/artifactory/debian-staging/pool/contrast-go_${CONTRAST_DEB_VERSION}_amd64.deb -o contrast-go.deb
+        curl -L https://contrastsecurity.jfrog.io/artifactory/debian-public/pool/contrast-go_0.2.5-1~bionic_amd64.deb -o contrast.go.deb
         sudo dpkg -i contrast-go.deb
+#        curl -L https://pkg.contrastsecurity.com/artifactory/debian-staging/pool/contrast-go_${CONTRAST_DEB_VERSION}_amd64.deb -o contrast-go.deb
+
         
 #     - name: Download the Contrast Agent
 #       run: |
